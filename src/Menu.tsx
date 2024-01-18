@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Food } from "./food";
+import { Card } from "./Card";
 
 export function Menu() {
   const [foods, setFoods] = useState<Food[]>([]); // generic type argument set to an array of Food objects
@@ -20,10 +21,7 @@ export function Menu() {
       <h1 className="text-2xl font-bold">Menu</h1>
       <div className="flex flex-wrap ">
         {foods.map((food) => (
-          <section
-            key={food.id}
-            className="bg-green-400 border-1 border-gray-500 shadow rounded m-2 p-2 mw-96"
-          >
+          <Card key={food.id}>
             <div className="flex flex-wrap justify-between ">
               <div className="w-48">
                 <h2 className="font-bold">{food.name}</h2>
@@ -51,7 +49,7 @@ export function Menu() {
                 />
               </div>
             </div>
-          </section>
+          </Card>
         ))}
       </div>
     </>
