@@ -8,10 +8,21 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
+const AdminComponentImport = new FileRoute('/admin').createRoute()
 const AboutComponentImport = new FileRoute('/about').createRoute()
 const IndexComponentImport = new FileRoute('/').createRoute()
 
 // Create/Update Routes
+
+const AdminComponentRoute = AdminComponentImport.update({
+  path: '/admin',
+  getParentRoute: () => rootRoute,
+} as any).update({
+  component: lazyRouteComponent(
+    () => import('./routes/admin.component'),
+    'component',
+  ),
+})
 
 const AboutComponentRoute = AboutComponentImport.update({
   path: '/about',
@@ -45,6 +56,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutComponentImport
       parentRoute: typeof rootRoute
     }
+    '/admin': {
+      preLoaderRoute: typeof AdminComponentImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -53,4 +68,5 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexComponentRoute,
   AboutComponentRoute,
+  AdminComponentRoute,
 ])
