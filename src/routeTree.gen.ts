@@ -8,11 +8,22 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
+const ErrorComponentImport = new FileRoute('/error').createRoute()
 const AdminComponentImport = new FileRoute('/admin').createRoute()
 const AboutComponentImport = new FileRoute('/about').createRoute()
 const IndexComponentImport = new FileRoute('/').createRoute()
 
 // Create/Update Routes
+
+const ErrorComponentRoute = ErrorComponentImport.update({
+  path: '/error',
+  getParentRoute: () => rootRoute,
+} as any).update({
+  component: lazyRouteComponent(
+    () => import('./routes/error.component'),
+    'component',
+  ),
+})
 
 const AdminComponentRoute = AdminComponentImport.update({
   path: '/admin',
@@ -60,6 +71,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminComponentImport
       parentRoute: typeof rootRoute
     }
+    '/error': {
+      preLoaderRoute: typeof ErrorComponentImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -69,4 +84,5 @@ export const routeTree = rootRoute.addChildren([
   IndexComponentRoute,
   AboutComponentRoute,
   AdminComponentRoute,
+  ErrorComponentRoute,
 ])

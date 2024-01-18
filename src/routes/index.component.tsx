@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Food } from "../food";
-import { Card } from "../Card";
+import { Card } from "../shared/Card";
 
 export const component = function Index() {
   const [foods, setFoods] = useState<Food[]>([]); // generic type argument set to an array of Food objects
@@ -27,7 +27,13 @@ export const component = function Index() {
                 <h2 className="font-bold">{food.name}</h2>
                 <p className="font-thin">{food.description}</p>
                 <p className="font-extrabold">${food.price}</p>
+                <p>
+                  {/* Add span to style just the text for Tags */}
+                  <span className="font-bold"> Tags:</span>{" "}
+                  {food.tags.join(",")}
+                </p>
                 <button
+                  aria-label={"Delete " + food.name}
                   className="bg-red-600 rounded"
                   onClick={() => {
                     fetch("http://localhost:4001/foods/" + food.id, {

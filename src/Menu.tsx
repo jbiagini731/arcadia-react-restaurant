@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Food } from "./food";
-import { Card } from "./Card";
+import { Card } from "./shared/Card";
 
 export function Menu() {
   const [foods, setFoods] = useState<Food[]>([]); // generic type argument set to an array of Food objects
