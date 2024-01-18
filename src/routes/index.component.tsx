@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Food } from "./food";
-import { Card } from "./Card";
+import { Food } from "../food";
+import { Card } from "../Card";
 
-export function Menu() {
+export const component = function Index() {
   const [foods, setFoods] = useState<Food[]>([]); // generic type argument set to an array of Food objects
 
   useEffect(() => {
@@ -57,4 +57,4 @@ export function Menu() {
       </div>
     </>
   );
-}
+};
