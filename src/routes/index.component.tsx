@@ -1,59 +1,75 @@
-import { useEffect, useState } from "react";
-import { Food } from "../food";
-import { Card } from "../shared/Card";
+import { useState } from "react";
+import { FoodTag, foodTags } from "../food";
+import { Card } from "../Card";
+import { useDeleteFood, useFoods } from "../hooks/useFoods";
+import toast from "react-hot-toast";
 
 export const component = function Index() {
-  const [foods, setFoods] = useState<Food[]>([]); // generic type argument set to an array of Food objects
+  const [selectedTag, setSelectedTag] = useState<FoodTag | "">("");
 
-  useEffect(() => {
-    async function fetchData() {
-      const resp = await fetch("http://localhost:4001/foods");
-      const _foods = (await resp.json()) as Food[];
-      setFoods(_foods);
-    }
-    fetchData();
-  }, []);
+  // Alias data to foods
+  const { data: foods = [], isLoading } = useFoods();
+  const { mutate: deleteFood } = useDeleteFood(() => {
+    toast.success("Food deleted successfully!");
+  });
 
-  // debugger;
+  if (isLoading) return <p>Loading...</p>;
+
+  // Derived state
+  const matchingFoods = !selectedTag
+    ? foods
+    : foods.filter((food) => food.tags.includes(selectedTag));
 
   return (
     <>
-      <h1 className="text-2xl font-bold">Menu</h1>
-      <div className="flex flex-wrap ">
-        {foods.map((food) => (
+      <h1>Menu</h1>
+      <label htmlFor="tag-filter">Filter by tag</label>
+      <select
+        id="tag-filter"
+        value={selectedTag}
+        onChange={(event) => {
+          setSelectedTag(event.target.value as FoodTag);
+        }}
+      >
+        <option key="all-key" value="">
+          All
+        </option>
+        {foodTags.map((tag) => {
+          return (
+            <option key={tag} className="border border-l-rose-700">
+              {tag}
+            </option>
+          );
+        })}
+      </select>
+      <h2>
+        {selectedTag &&
+          `${matchingFoods.length} matching food${(matchingFoods.length > 1 && "s") || ""} found`}
+      </h2>
+      <div className="flex flex-wrap">
+        {matchingFoods.map((food) => (
           <Card key={food.id}>
-            <div className="flex flex-wrap justify-between ">
+            <div className="flex justify-between">
               <div className="w-48">
-                <h2 className="font-bold">{food.name}</h2>
-                <p className="font-thin">{food.description}</p>
-                <p className="font-extrabold">${food.price}</p>
-                <p>
-                  {/* Add span to style just the text for Tags */}
-                  <span className="font-bold"> Tags:</span>{" "}
-                  {food.tags.join(",")}
-                </p>
+                <h2>{food.name}</h2>
                 <button
                   aria-label={"Delete " + food.name}
-                  className="bg-red-600 rounded"
-                  onClick={() => {
-                    fetch("http://localhost:4001/foods/" + food.id, {
-                      method: "DELETE",
-                    });
-                    setFoods((prevFoods) => {
-                      // setting state is async
-                      const newFoods = prevFoods.filter((f) => f !== food); // setting state to variable allows it to be logged properly
-                      console.log(newFoods);
-                      return newFoods; // new state
-                    });
-                  }}
+                  className="text-red-500 hover:cursor-pointer"
+                  onClick={() => deleteFood(food.id)}
                 >
                   Delete
-                </button>{" "}
+                </button>
+                <p>{food.description}</p>
+                <p>${food.price}</p>
+                <p>
+                  <span className="font-bold">Tags</span>:{" "}
+                  {food.tags.join(", ")}
+                </p>
               </div>
               <div className="w-36">
                 <img
-                  alt={food.name}
                   className="w-32 rounded"
+                  alt={food.name}
                   src={`/images/${food.image}`}
                 />
               </div>

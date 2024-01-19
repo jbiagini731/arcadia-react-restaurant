@@ -24,6 +24,6 @@ export const Primary: Story = {
     value: "value",
     className: "",
     type: "text",
-    label: "Input",
+    label: "Button",
   },
 };

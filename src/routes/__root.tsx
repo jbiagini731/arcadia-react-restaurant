@@ -8,11 +8,11 @@ export const Route = new RootRoute({
         <Link to="/" className="[&.active]:font-bold">
           Menu
         </Link>{" "}
-        <Link to="/about" className="[&.active]:font-bold">
-          About
-        </Link>
         <Link to="/admin" className="[&.active]:font-bold">
           Admin
+        </Link>{" "}
+        <Link to="/about" className="[&.active]:font-bold">
+          About
         </Link>
       </nav>
       <hr />

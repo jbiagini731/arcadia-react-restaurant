@@ -1,34 +1,34 @@
 import { test, expect } from "@playwright/test";
 
-test("should support adding a new food, display the new food on the menu page, show menu heading and deleting the new food", async ({
+// Unit: 1 function or 1 component
+// Integration test: Test a feature in the browser against mocked endpoints
+// E2E: Test a feature in the browser against real endpoints
+
+test("should support adding a new food, displaying the new food on the menu page, showing the menu heading, and deleting the new food", async ({
   page,
 }) => {
   await page.goto("http://localhost:4000/admin");
 
   // Check validation by submitting an empty form
   await page.getByRole("button", { name: "Add Food" }).click();
-  // Expect form requirements to prevent form submission
   await expect(page.getByText("Name is required")).toHaveCount(1);
   await expect(page.getByText("Description is required")).toHaveCount(1);
-  await expect(page.getByText("At least one tag is required")).toHaveCount(1);
+  await expect(page.getByText("Select at least one tag")).toHaveCount(1);
 
   // Fill out new food form
-  await page.getByLabel("Name").fill("New Food");
-  await page.getByLabel("Description").fill("New Food Description");
-  await page.getByLabel("Price").fill("123");
+  await page.getByLabel("Name").fill("New food");
+  await page.getByLabel("Description").fill("New food description");
+  await page.getByLabel("Price").fill("1");
   await page.getByLabel("Breakfast").check();
   await page.getByRole("button", { name: "Add Food" }).click();
 
-  // Expect to find the Menu heading
+  // Now should be redirected to the Menu page, so check that the new food displays
   await expect(page.getByRole("heading", { name: "Menu" })).toHaveCount(1);
-  // Expect the successful toast message to appear
+  await expect(page.getByRole("heading", { name: "New food" })).toHaveCount(1);
   await expect(page.getByText("Food added successfully!")).toHaveCount(1);
-  // Expect the new food to be added
-  await expect(page.getByRole("heading", { name: "New Food" })).toHaveCount(1);
-  // Delete the New Food
-  await page.getByRole("button", { name: "Delete New Food" }).click();
-  // Expect the New Food was deleted
+
+  await page.getByRole("button", { name: "Delete New food" }).click();
   await expect(
-    page.getByRole("button", { name: "Delete New Food" }),
+    page.getByRole("button", { name: "Delete New food" }),
   ).toHaveCount(0);
 });
